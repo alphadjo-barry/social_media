@@ -1,0 +1,42 @@
+services:
+  postgres:
+    container_name: postgres_service
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: social_media
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U social_media"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    restart: always
+    container_name: smtp4dev_service
+    ports:
+      - "9090:80"
+      - "25:25"
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    restart: unless-stopped
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # Interface web
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    
+volumes:
+  postgres_data:
+  minio_data:

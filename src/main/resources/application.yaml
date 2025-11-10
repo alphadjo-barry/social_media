@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: social_media
+  mail:
+    host: localhost
+    port: 25
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/social_media
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret-key: 3e9f2d47c21f4f88b6312af7f0c46a62db88e21c472a13e8d5118ab0b35b73f0
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: profiles

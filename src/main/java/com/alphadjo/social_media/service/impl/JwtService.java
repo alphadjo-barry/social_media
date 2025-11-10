@@ -1,0 +1,64 @@
+package com.alphadjo.social_media.service.impl;
+
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class JwtService {
+
+    private final JwtEncoder jwtEncoder;
+    private final AuthenticationManager authenticationManager;
+
+    public String generateToken(String email, String password){
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticateUser(authenticationToken);
+
+        return createToken(authentication);
+    }
+
+    private Authentication authenticateUser(UsernamePasswordAuthenticationToken authenticationToken) {
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return authentication;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Username or password is incorrect");
+        }
+    }
+
+    private String createToken(Authentication authentication) {
+        Set<String> authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
+        JwtClaimsSet claims = getClaimsFromToken(authentication, authorities);
+        JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
+
+    private JwtClaimsSet getClaimsFromToken(Authentication authentication, Set<String> authorities) {
+
+        return JwtClaimsSet.builder()
+                .subject(authentication.getName())
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(60 * 30)) // 30 Minutes
+                .claim("roles", authorities)
+                .build();
+    }
+}
