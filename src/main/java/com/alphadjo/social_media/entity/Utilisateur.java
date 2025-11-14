@@ -30,6 +30,9 @@ public class Utilisateur extends AbstractEntity implements UserDetails {
     @Column(nullable = true)
     private String photoOriginalName;
 
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String picturePath;
+
     private boolean isActive = false;
 
    @ManyToMany

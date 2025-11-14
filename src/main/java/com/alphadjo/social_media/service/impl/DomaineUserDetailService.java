@@ -1,7 +1,7 @@
 package com.alphadjo.social_media.service.impl;
 
 import com.alphadjo.social_media.entity.Utilisateur;
-import com.alphadjo.social_media.repository.contract.UtilisationRepository;
+import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class DomaineUserDetailService implements UserDetailsService {
 
-    private final UtilisationRepository utilisationRepository;
+    private final UtilisateurRepository utilisationRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

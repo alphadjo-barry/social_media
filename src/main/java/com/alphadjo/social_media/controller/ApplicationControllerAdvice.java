@@ -1,6 +1,7 @@
 package com.alphadjo.social_media.controller;
 
 import com.alphadjo.social_media.dto.error.ErrorEntity;
+import com.alphadjo.social_media.exceptions.FileStorageException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,15 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ApplicationControllerAdvice {
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorEntity> handleException(FileStorageException exception){
+        ErrorEntity error = ErrorEntity.builder()
+                .code("500")
+                .message(exception.getMessage())
+                .build();
+        return ResponseEntity.status(500).body(error);
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorEntity> handleException(RuntimeException exception){
@@ -48,6 +58,7 @@ public class ApplicationControllerAdvice {
                 .code("404")
                 .message(exception.getMessage())
                 .build();
+
         return ResponseEntity.status(404).body(error);
     }
 

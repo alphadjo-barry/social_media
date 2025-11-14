@@ -1,7 +1,8 @@
 package com.alphadjo.social_media.service.impl;
 
 import com.alphadjo.social_media.entity.Utilisateur;
-import com.alphadjo.social_media.repository.contract.UtilisationRepository;
+import com.alphadjo.social_media.exceptions.FileStorageException;
+import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 import com.alphadjo.social_media.service.contract.MinioService;
 import com.alphadjo.social_media.service.contract.UtilisateurService;
 import io.minio.GetPresignedObjectUrlArgs;
@@ -12,6 +13,7 @@ import io.minio.http.Method;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,26 +22,26 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class MinioServiceImpl implements MinioService {
 
     private final MinioClient minioClient;
     private final UtilisateurService utilisateurService;
-    private final UtilisationRepository utilisationRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
     @Override
     public void uploadFile(String filename, InputStream inputStream, String contentType, String bucketName) {
 
         try{
-
             Jwt jwt = utilisateurService.getAuthenticatedUser();
 
-            Utilisateur utilisateur = utilisationRepository.findByEmail(jwt.getSubject()).orElseThrow(
+            Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                     () -> new EntityNotFoundException("User not found with username: " + jwt.getSubject() + " in the system"));
 
             utilisateur.setPhotoOriginalName(filename);
-            utilisationRepository.save(utilisateur);
+            utilisateurRepository.save(utilisateur);
 
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -47,8 +49,7 @@ public class MinioServiceImpl implements MinioService {
                             .object(filename)
                             .stream(inputStream, inputStream.available(), -1)
                             .contentType(contentType)
-                            .build()
-            );
+                            .build());
         }
         catch (Exception e){
             throw new RuntimeException("Error while uploading file to Minio, from service");
@@ -56,6 +57,14 @@ public class MinioServiceImpl implements MinioService {
     }
 
     public String pictureName(MultipartFile file){
+
+        if (file == null || file.isEmpty()) {
+            throw new FileStorageException("File is empty", new Throwable("Missing of empty file"));
+        }
+
+        if(file.getSize() > 5 * 1024 * 1024){
+            throw new IllegalArgumentException("File size is too large, max size is 5");
+        }
 
         String originalFilename = file.getOriginalFilename();
         String extension = "";
@@ -71,23 +80,36 @@ public class MinioServiceImpl implements MinioService {
         return UUID.randomUUID() + extension;
     }
 
-
     @Override
-    public String getProfilePicture() {
+    public String getAuthUserPictureProfile() {
         Jwt jwt = utilisateurService.getAuthenticatedUser();
 
-        Utilisateur utilisateur = utilisationRepository.findByEmail(jwt.getSubject()).orElseThrow(
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                 () -> new RuntimeException("User not found with username: " + jwt.getSubject() + " in the system"));
 
         String filename = utilisateur.getPhotoOriginalName();
+
         if(filename == null || filename.isEmpty()){
             throw new RuntimeException("User has no profile picture");
         }
 
-        return this.getPresignedObjectUrl(filename) ;
+        return this.getFileFromBucket(filename) ;
     }
 
-    private String getPresignedObjectUrl(String filename) {
+    @Override
+    public String getPictureProfileUrlByFileName(String fileName) {
+
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(fileName).orElseThrow(
+                () -> new RuntimeException("User not found with username: " + fileName + " in the system"));
+
+        if(fileName == null || fileName.isEmpty()){
+            throw new RuntimeException("The picture is empty");
+        }
+
+        return this.getFileFromBucket(utilisateur.getPhotoOriginalName());
+    }
+
+    private String getFileFromBucket(String filename) {
 
         try{
             return minioClient.getPresignedObjectUrl(
@@ -95,13 +117,12 @@ public class MinioServiceImpl implements MinioService {
                             .method(Method.GET)
                             .bucket("profiles")
                             .object(filename)
-                            .expiry(60 * 60 * 24)
                             .build()
             );
         }
         catch (Exception e){
             throw new RuntimeException("Error where generating file URL.");
         }
-
     }
+
 }

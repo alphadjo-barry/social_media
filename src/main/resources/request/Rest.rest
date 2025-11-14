@@ -1,3 +1,13 @@
+### authentication 0
+
+POST http://localhost:8080/api/v1/authenticate
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "Alphadjo30901@"
+}
+
 ### authentication 1
 
 POST http://localhost:8080/api/v1/authenticate
@@ -20,7 +30,7 @@ Content-Type: application/json
 
 ### inscription alphadjo
 
-POST http://localhost:8080/api/v1/utilisateurs
+POST http://localhost:8080/api/v1/utilisateurs/user
 Content-Type: application/json
 
 {
@@ -33,7 +43,7 @@ Content-Type: application/json
 
 ### inscription Habibatou
 
-POST http://localhost:8080/api/v1/utilisateurs
+POST http://localhost:8080/api/v1/utilisateurs/user
 Content-Type: application/json
 
 {
@@ -41,6 +51,14 @@ Content-Type: application/json
   "lastName": "Diallo",
   "password": "Alphadjo30901@",
   "email": "diallo.habibatou2710@gmail.com",
-  "phone": "+33651598978",
-  "picture": "85739A70018985.jpeg"
+  "phone": "+33651598978"
+}
+
+### enbale accout of user
+
+PUT http://localhost:8080/api/v1/utilisateurs/enableAccount
+Content-Type: application/json
+
+{
+  "code": "288038"
 }

@@ -1,7 +1,6 @@
 package com.alphadjo.social_media.dto.role;
 
 import com.alphadjo.social_media.entity.Role;
-import com.alphadjo.social_media.enums.RoleEnum;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;

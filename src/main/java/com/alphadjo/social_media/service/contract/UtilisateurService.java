@@ -1,10 +1,19 @@
 package com.alphadjo.social_media.service.contract;
 
+import com.alphadjo.social_media.dto.password.PasswordRequest;
 import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
+
+import com.alphadjo.social_media.dto.validation.ValidationRequest;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface UtilisateurService extends AbstractService<UtilisateurDto>{
 
-    public Jwt getAuthenticatedUser();
+    Jwt getAuthenticatedUser();
+    UtilisateurDto saveAdmin(UtilisateurDto dto);
+    String enableAccount(ValidationRequest request);
+
+    boolean enableById(Long id);
+    boolean disableById(Long id);
+    String passwordChange(Long id, PasswordRequest request);
 }

@@ -41,16 +41,14 @@ public class ValidationServiceImpl implements ValidationService {
     @Override
     public Validation findByCode(String code) {
 
-        Validation validation = validationRepository.findByCode(code).orElseThrow(
-                () -> new EntityNotFoundException("Validation code is incorrect")
-        );
-
-        this.setValidatedAt(validation);
-        return validation;
+       return validationRepository.findByCode(code)
+               .orElseThrow(() -> new EntityNotFoundException("Validation code is incorrect"));
     }
 
     @Override
     public void setValidatedAt(Validation validation) {
         validation.setValidatedAt(Instant.now());
+        validation.setValidated(true);
+        validationRepository.save(validation);
     }
 }

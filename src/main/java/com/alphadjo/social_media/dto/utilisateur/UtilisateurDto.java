@@ -1,12 +1,14 @@
 package com.alphadjo.social_media.dto.utilisateur;
-
 import com.alphadjo.social_media.dto.role.RoleDto;
-
 import com.alphadjo.social_media.entity.Utilisateur;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UtilisateurDto {
 
     private Long id;
@@ -41,6 +45,11 @@ public class UtilisateurDto {
     @Pattern(regexp = "^\\+33[1-9][0-9]{8}$", message = "Phone number is not valid")
     private String phone;
 
+    private String photoOriginalName;
+
+    @Column(columnDefinition = "TEXT")
+    private String picturePath;
+
     private Set<RoleDto> roles;
 
     public static Utilisateur toEntity(UtilisateurDto dto){
@@ -62,6 +71,8 @@ public class UtilisateurDto {
                 .lastName(utilisateur.getLastName().toUpperCase())
                 .email(utilisateur.getEmail())
                 .phone(utilisateur.getPhone())
+                .photoOriginalName(utilisateur.getPhotoOriginalName())
+                .picturePath(utilisateur.getPicturePath())
                 .roles(
                         utilisateur.getRoles() != null ? utilisateur.getRoles().stream()
                                 .map(RoleDto::fromEntity)
