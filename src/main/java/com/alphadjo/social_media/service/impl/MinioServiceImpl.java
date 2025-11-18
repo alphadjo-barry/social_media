@@ -3,11 +3,10 @@ package com.alphadjo.social_media.service.impl;
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.exceptions.FileStorageException;
 import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
+import com.alphadjo.social_media.service.contract.AuthenticationUserService;
 import com.alphadjo.social_media.service.contract.MinioService;
 import com.alphadjo.social_media.service.contract.UtilisateurService;
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 
 import io.minio.http.Method;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,12 +29,14 @@ public class MinioServiceImpl implements MinioService {
     private final MinioClient minioClient;
     private final UtilisateurService utilisateurService;
     private final UtilisateurRepository utilisateurRepository;
+    private final AuthenticationUserService authenticationUserService;
 
     @Override
-    public void uploadFile(String filename, InputStream inputStream, String contentType, String bucketName) {
+    public void uploadProfilePicture(String filename, InputStream inputStream, String contentType, String bucketName) {
 
         try{
-            Jwt jwt = utilisateurService.getAuthenticatedUser();
+
+            Jwt jwt =authenticationUserService.getAuthenticatedUser();
 
             Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                     () -> new EntityNotFoundException("User not found with username: " + jwt.getSubject() + " in the system"));
@@ -50,19 +51,45 @@ public class MinioServiceImpl implements MinioService {
                             .stream(inputStream, inputStream.available(), -1)
                             .contentType(contentType)
                             .build());
+
+            String pictureUrl = this.getPictureProfileUrlByFileName(filename);
+            utilisateur.setPicturePath(pictureUrl);
+            utilisateurRepository.save(utilisateur);
         }
         catch (Exception e){
-            throw new RuntimeException("Error while uploading file to Minio, from service");
+            throw new RuntimeException("Error while uploading profile file to Minio, from service");
         }
     }
 
-    public String pictureName(MultipartFile file){
+    @Override
+    public String uploadPublicationPicture(String filename, InputStream inputStream, String contentType, String bucketName) {
+        try{
+
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filename)
+                            .stream(inputStream, inputStream.available(), -1)
+                            .contentType(contentType)
+                            .build());
+
+            return this.getPictureProfileUrlByFileName(filename);
+        }
+        catch (Exception e){
+            log.info(e.getMessage());
+            throw new RuntimeException("Error while uploading publication file to Minio, from service");
+        }
+    }
+
+    public String pictureName(MultipartFile file) throws FileStorageException, IllegalArgumentException{
 
         if (file == null || file.isEmpty()) {
             throw new FileStorageException("File is empty", new Throwable("Missing of empty file"));
         }
 
-        if(file.getSize() > 5 * 1024 * 1024){
+        long maxSize = 6 * 1024 * 1024;
+
+        if(file.getSize() > maxSize){
             throw new IllegalArgumentException("File size is too large, max size is 5");
         }
 
@@ -82,7 +109,7 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public String getAuthUserPictureProfile() {
-        Jwt jwt = utilisateurService.getAuthenticatedUser();
+        Jwt jwt = authenticationUserService.getAuthenticatedUser();
 
         Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                 () -> new RuntimeException("User not found with username: " + jwt.getSubject() + " in the system"));
@@ -99,7 +126,9 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public String getPictureProfileUrlByFileName(String fileName) {
 
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(fileName).orElseThrow(
+        Jwt jwt = authenticationUserService.getAuthenticatedUser();
+
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                 () -> new RuntimeException("User not found with username: " + fileName + " in the system"));
 
         if(fileName == null || fileName.isEmpty()){

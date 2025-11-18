@@ -11,13 +11,13 @@ import com.alphadjo.social_media.enums.RoleEnum;
 import com.alphadjo.social_media.repository.contract.RoleRepository;
 import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 
+import com.alphadjo.social_media.service.contract.AuthenticationUserService;
 import com.alphadjo.social_media.service.contract.UtilisateurService;
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -36,6 +36,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationUserService authenticationUserService;
 
     @Override
     public List<UtilisateurDto> findAll() {
@@ -73,17 +74,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         utilisateurRepository.delete(utilisateur);
     }
 
-    @Override
-    public Jwt getAuthenticatedUser() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof Jwt){
-            return (Jwt) authentication.getPrincipal() ;
-        }
-        return null;
-    }
-
+    @Transactional
     @Override
     public UtilisateurDto saveAdmin(UtilisateurDto dto) {
         return saveUserWithRole(dto, RoleEnum.ADMIN);
@@ -132,14 +123,14 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             throw new IllegalArgumentException("Utilisateur is already disabled");
         }
 
-        utilisateur.setActive(true);
+        utilisateur.setActive(false);
         return this.utilisateurRepository.save(utilisateur).isActive();
     }
 
     @Override
     public String passwordChange(Long id, PasswordRequest request) {
 
-        Jwt jwt = getAuthenticatedUser();
+        Jwt jwt = authenticationUserService.getAuthenticatedUser();
 
         Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject())
                 .orElseThrow(() -> new EntityNotFoundException("No one logged in user in the system !"));

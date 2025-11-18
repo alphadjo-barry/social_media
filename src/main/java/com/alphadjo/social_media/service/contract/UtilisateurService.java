@@ -5,11 +5,8 @@ import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
 
 import com.alphadjo.social_media.dto.validation.ValidationRequest;
 
-import org.springframework.security.oauth2.jwt.Jwt;
-
 public interface UtilisateurService extends AbstractService<UtilisateurDto>{
 
-    Jwt getAuthenticatedUser();
     UtilisateurDto saveAdmin(UtilisateurDto dto);
     String enableAccount(ValidationRequest request);
 

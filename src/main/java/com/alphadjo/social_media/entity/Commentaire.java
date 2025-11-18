@@ -1,7 +1,14 @@
 package com.alphadjo.social_media.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "commentaires",
         uniqueConstraints = @UniqueConstraint(columnNames = {"publication_id", "utilisateur_id"}))

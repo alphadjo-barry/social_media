@@ -53,7 +53,7 @@ public class UtilisateurController {
 
             String fileName = minioService.pictureName(file);
 
-            minioService.uploadFile(
+            minioService.uploadProfilePicture(
                     fileName,
                     file.getInputStream(),
                     file.getContentType(),

@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuperBuilder
 @Entity
@@ -19,14 +19,18 @@ import java.util.List;
 @Table(name = "publications")
 public class Publication extends AbstractEntity{
 
-    @Lob
     private String legende;
-    private List<String> images;
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur auteur;
 
     @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private Set<Reaction> reactions = new HashSet<>();
+
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Commentaire> commentaires = new HashSet<>();
+
+    @OneToMany(mappedBy = "publication", cascade =  CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<PublicationPicture> pictures = new HashSet<>();
 }

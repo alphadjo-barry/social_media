@@ -4,7 +4,7 @@ POST http://localhost:8080/api/v1/authenticate
 Content-Type: application/json
 
 {
-  "email": "admin@admin.com",
+  "email": "biya.barry@gmail.com",
   "password": "Alphadjo30901@"
 }
 
@@ -54,11 +54,24 @@ Content-Type: application/json
   "phone": "+33651598978"
 }
 
+### inscription biya
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Biya",
+  "lastName": "barry",
+  "password": "Alphadjo30901@",
+  "email": "biya.barry@gmail.com",
+  "phone": "+33700000000"
+}
+
 ### enbale accout of user
 
 PUT http://localhost:8080/api/v1/utilisateurs/enableAccount
 Content-Type: application/json
 
 {
-  "code": "288038"
+  "code": "385880"
 }

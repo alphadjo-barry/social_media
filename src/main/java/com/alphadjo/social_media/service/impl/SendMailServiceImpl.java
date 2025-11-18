@@ -78,8 +78,7 @@ public class SendMailServiceImpl implements SendMailService {
             helper.setText(html, true);
 
             javaMailSender.send(message);
-            log.info("✅ Code de validation envoyé à {}", to);
-
+            log.info("Code de validation envoyé à {}", to);
         } catch (Exception e) {
             log.error("Erreur lors de l’envoi du mail : {}", e.getMessage(), e);
         }

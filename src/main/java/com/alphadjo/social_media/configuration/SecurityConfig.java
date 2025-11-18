@@ -30,7 +30,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/utilisateurs/user").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/utilisateurs/enableAccount").permitAll()
                         .anyRequest().authenticated()
-                ).oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                         jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();

@@ -2,6 +2,7 @@ package com.alphadjo.social_media.dto.utilisateur;
 import com.alphadjo.social_media.dto.role.RoleDto;
 import com.alphadjo.social_media.entity.Utilisateur;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
@@ -54,8 +55,10 @@ public class UtilisateurDto {
 
     public static Utilisateur toEntity(UtilisateurDto dto){
 
+        if(dto == null) return null;
+
         return Utilisateur.builder()
-                .firstName(dto.firstName)
+                .firstName(dto.firstName.toLowerCase())
                 .lastName(dto.lastName.toLowerCase())
                 .email(dto.email)
                 .password(dto.password)
@@ -64,6 +67,8 @@ public class UtilisateurDto {
     }
 
     public static UtilisateurDto fromEntity(Utilisateur utilisateur){
+
+        if(utilisateur == null) return null;
 
         return UtilisateurDto.builder()
                 .id(utilisateur.getId())

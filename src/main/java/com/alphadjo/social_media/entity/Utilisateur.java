@@ -1,5 +1,6 @@
 package com.alphadjo.social_media.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -24,7 +25,10 @@ public class Utilisateur extends AbstractEntity implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+
+    @JsonIgnore
     private String password;
+
     private String phone;
 
     @Column(nullable = true)

@@ -6,7 +6,8 @@ import java.io.InputStream;
 
 public interface MinioService {
 
-    void uploadFile(String filename, InputStream inputStream, String contentType, String bucketName);
+    void uploadProfilePicture(String filename, InputStream inputStream, String contentType, String bucketName);
+    String uploadPublicationPicture(String filename, InputStream inputStream, String contentType, String bucketName);
     String pictureName(MultipartFile file);
     String getAuthUserPictureProfile();
     String getPictureProfileUrlByFileName(String fileName);
