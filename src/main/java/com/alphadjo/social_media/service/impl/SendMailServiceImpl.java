@@ -1,14 +1,18 @@
 package com.alphadjo.social_media.service.impl;
 
-import com.alphadjo.social_media.entity.Validation;
+import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
 import com.alphadjo.social_media.service.contract.SendMailService;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.time.Year;
 
 @Slf4j
@@ -17,21 +21,32 @@ import java.time.Year;
 public class SendMailServiceImpl implements SendMailService {
 
     private final JavaMailSender javaMailSender;
+    private final MinioClient minioClient;
 
     @Override
-    public void sendMail(Validation validation) {
+    public void sendMail(MessageRabbitDto messageRabbitDto) {
+
+
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            String to = validation.getUtilisateur().getEmail();
-            String firstName = validation.getUtilisateur().getFirstName();
-            String lastName = validation.getUtilisateur().getLastName();
-            String code = validation.getCode();
+            String to = messageRabbitDto.email();
+            String firstName = messageRabbitDto.firstName();
+            String lastName = messageRabbitDto.lastName();
+            String code = messageRabbitDto.code();
 
             helper.setFrom("alphadjo-tech@social-media.gn", "Social Media Team");
             helper.setTo(to);
             helper.setSubject("Votre code de validation Social Media");
+
+            InputStream fileStream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket("publications")
+                            .object("eb658b31-f00f-4618-a2f2-801d799cf75d.jpeg")
+                            .build());
+
+            helper.addAttachment("eb658b31-f00f-4618-a2f2-801d799cf75d.jpeg", new ByteArrayResource(fileStream.readAllBytes()));
 
             String html =
                     "<!doctype html>" +

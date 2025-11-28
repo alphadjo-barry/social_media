@@ -34,9 +34,9 @@ public class PublicationDto {
 
     private MultipartFile[] files;
 
-    private Set<ReactionDto> reactions = new HashSet<>();
-    private Set<CommentaireDto> commentaires = new HashSet<>();
-    private Set<PublicationPictureDto> pictures = new HashSet<>();
+    private long reactions;
+    private long commentaires;
+    private Set<PublicationPictureDto> pictures;
 
     public static Publication toEntity(PublicationDto publicationDto){
 
@@ -57,12 +57,10 @@ public class PublicationDto {
                 .auteur(UtilisateurDto.fromEntity(publication.getAuteur()))
                 .reactions(
                         publication.getReactions() != null ? publication.getReactions().stream()
-                                .map(ReactionDto::fromEntity)
-                                .collect(Collectors.toSet()) : new HashSet<>())
+                                .distinct().count() : 0)
                 .commentaires(
                         publication.getCommentaires() != null ? publication.getCommentaires().stream()
-                                .map(CommentaireDto::fromEntity)
-                                .collect(Collectors.toSet()) : new HashSet<>())
+                                .distinct().count() : 0)
                 .pictures(
                         publication.getPictures() != null ? publication.getPictures().stream()
                                 .map(PublicationPictureDto::fromEntity)

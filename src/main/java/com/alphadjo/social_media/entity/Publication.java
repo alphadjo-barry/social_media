@@ -25,10 +25,10 @@ public class Publication extends AbstractEntity{
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur auteur;
 
-    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Reaction> reactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Commentaire> commentaires = new HashSet<>();
 
     @OneToMany(mappedBy = "publication", cascade =  CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)

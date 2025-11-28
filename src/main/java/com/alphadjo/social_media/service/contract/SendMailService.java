@@ -1,8 +1,8 @@
 package com.alphadjo.social_media.service.contract;
 
-import com.alphadjo.social_media.entity.Validation;
+import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
 
 public interface SendMailService {
 
-    void sendMail(Validation validation);
+    void sendMail(MessageRabbitDto messageRabbitDto);
 }

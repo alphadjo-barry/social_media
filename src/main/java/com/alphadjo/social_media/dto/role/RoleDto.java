@@ -13,7 +13,6 @@ public class RoleDto {
 
     @NotBlank(message = "Name is required")
     private String name;
-
     private boolean isActive = false;
 
     public static Role toEntity(RoleDto roleDto){

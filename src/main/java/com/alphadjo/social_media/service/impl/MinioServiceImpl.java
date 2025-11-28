@@ -96,11 +96,11 @@ public class MinioServiceImpl implements MinioService {
         String originalFilename = file.getOriginalFilename();
         String extension = "";
 
-        if(originalFilename != null && originalFilename.contains(".")){
+            if(originalFilename != null && originalFilename.contains(".")){
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
             if(!List.of(".jpg", ".jpeg", ".png").contains(extension)){
-                throw new IllegalArgumentException("File extension is not supported, only .jpg, .jpeg and .png are supported");
+                throw new IllegalArgumentException("Only the jpg, jpeg and png are supported");
             }
         }
 
@@ -129,7 +129,7 @@ public class MinioServiceImpl implements MinioService {
         Jwt jwt = authenticationUserService.getAuthenticatedUser();
 
         Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
-                () -> new RuntimeException("User not found with username: " + fileName + " in the system"));
+                () -> new RuntimeException("User not found with in the system"));
 
         if(fileName == null || fileName.isEmpty()){
             throw new RuntimeException("The picture is empty");

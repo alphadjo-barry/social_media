@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "publication_picture")
 public class PublicationPicture extends AbstractEntity{
 
     private String photoOriginalName;

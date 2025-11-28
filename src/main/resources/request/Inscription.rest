@@ -1,0 +1,91 @@
+
+### inscription alphadjo
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Alphadjo",
+  "lastName": "barry",
+  "password": "Alphadjo30901@",
+  "email": "alphadiobiya@gmail.com",
+  "phone": "+33661474742"
+}
+
+### inscription Habibatou
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Habibatou",
+  "lastName": "Diallo",
+  "password": "Alphadjo30901@",
+  "email": "diallo.habibatou2710@gmail.com",
+  "phone": "+33651598978"
+}
+
+### inscription biya
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Biya",
+  "lastName": "barry",
+  "password": "Alphadjo30901@",
+  "email": "biya.barry@gmail.com",
+  "phone": "+33700000000"
+}
+
+### inscription biya
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Saliou",
+  "lastName": "Diallo",
+  "password": "Alphadjo30901@",
+  "email": "saliou.diallo@gmail.com",
+  "phone": "+33700000001"
+}
+
+### inscription adama
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "adama",
+  "lastName": "keita",
+  "password": "Alphadjo30901@",
+  "email": "adama.keita@gmail.com",
+  "phone": "+33700000008"
+}
+
+### inscription exemple
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "exemple",
+  "lastName": "exemple",
+  "password": "Alphadjo30901@",
+  "email": "exemple.exemple@gmail.com",
+  "phone": "+33500000008"
+}
+
+### inscription ndeye
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "NDEYE",
+  "lastName": "sira",
+  "password": "Alphadjo30901@",
+  "email": "ndey.sira@gmail.com",
+  "phone": "+33700000005"
+}

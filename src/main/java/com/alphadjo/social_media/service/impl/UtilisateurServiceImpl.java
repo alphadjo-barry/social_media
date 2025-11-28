@@ -16,13 +16,16 @@ import com.alphadjo.social_media.service.contract.UtilisateurService;
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -39,6 +42,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     private final AuthenticationUserService authenticationUserService;
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, readOnly = true)
     public List<UtilisateurDto> findAll() {
         return utilisateurRepository.findAll().stream()
                 .map(UtilisateurDto::fromEntity)
@@ -74,7 +78,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         utilisateurRepository.delete(utilisateur);
     }
 
-    @Transactional
     @Override
     public UtilisateurDto saveAdmin(UtilisateurDto dto) {
         return saveUserWithRole(dto, RoleEnum.ADMIN);

@@ -2,11 +2,13 @@ package com.alphadjo.social_media.service.impl;
 
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.entity.Validation;
+import com.alphadjo.social_media.rabbit.MailProducer;
 import com.alphadjo.social_media.repository.contract.ValidationRepository;
 import com.alphadjo.social_media.service.contract.SendMailService;
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,6 +22,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     private final ValidationRepository validationRepository;
     private final SendMailService sendMailService;
+    private final MailProducer mailProducer;
 
     @Override
     public void saveValidation(Utilisateur utilisateur) {
@@ -35,7 +38,8 @@ public class ValidationServiceImpl implements ValidationService {
         validation.setUtilisateur(utilisateur);
 
         validationRepository.save(validation);
-        sendMailService.sendMail(validation);
+        mailProducer.sendValidation(validation);
+
     }
 
     @Override

@@ -1,0 +1,29 @@
+### authentication 0
+
+POST http://localhost:8080/api/v1/authenticate
+Content-Type: application/json
+
+{
+  "email": "biya.barry@gmail.com",
+  "password": "Alphadjo30901@"
+}
+
+### authentication 1
+
+POST http://localhost:8080/api/v1/authenticate
+Content-Type: application/json
+
+{
+  "email": "alphadiobiya@gmail.com",
+  "password": "Alphadjo30901@"
+}
+
+### authentication 2
+
+POST http://localhost:8080/api/v1/authenticate
+Content-Type: application/json
+
+{
+  "email": "diallo.habibatou2710@gmail.com",
+  "password": "Alphadjo30901@"
+}
