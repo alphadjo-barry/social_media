@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Config {
+public class RabbitConfig {
 
     public static final String QUEUE_NAME = "mail.queue";
     public static final String EXCHANGE_NAME = "mail.exchange";

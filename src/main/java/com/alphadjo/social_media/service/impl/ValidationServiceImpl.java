@@ -4,11 +4,10 @@ import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.entity.Validation;
 import com.alphadjo.social_media.rabbit.MailProducer;
 import com.alphadjo.social_media.repository.contract.ValidationRepository;
-import com.alphadjo.social_media.service.contract.SendMailService;
+
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,7 +20,6 @@ import java.util.Random;
 public class ValidationServiceImpl implements ValidationService {
 
     private final ValidationRepository validationRepository;
-    private final SendMailService sendMailService;
     private final MailProducer mailProducer;
 
     @Override
@@ -29,7 +27,7 @@ public class ValidationServiceImpl implements ValidationService {
 
         Validation validation = new Validation();
         validation.setCreatedAt(Instant.now());
-        validation.setExpiredAt(Instant.now().plus(60 * 15, ChronoUnit.SECONDS));
+        validation.setExpiredAt(Instant.now().plus(60 * 5, ChronoUnit.SECONDS));
 
         Random random = new Random();
         int code = random.nextInt(999999);
@@ -39,7 +37,6 @@ public class ValidationServiceImpl implements ValidationService {
 
         validationRepository.save(validation);
         mailProducer.sendValidation(validation);
-
     }
 
     @Override

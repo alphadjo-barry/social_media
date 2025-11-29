@@ -1,6 +1,6 @@
 package com.alphadjo.social_media.rabbit;
 
-import com.alphadjo.social_media.configuration.Config;
+import com.alphadjo.social_media.configuration.RabbitConfig;
 import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
 import com.alphadjo.social_media.entity.Validation;
 import lombok.AllArgsConstructor;
@@ -25,8 +25,8 @@ public class MailProducer implements MailProducerInterface {
                 validation.getUtilisateur().getLastName());
 
         rabbitTemplate.convertAndSend(
-                Config.EXCHANGE_NAME,
-                Config.MAIL_ROUTING_KEY,
+                RabbitConfig.EXCHANGE_NAME,
+                RabbitConfig.MAIL_ROUTING_KEY,
                 messageRabbitDto);
 
         log.info("Message envoyé à RabbitMQ : {}", validation.getCode());

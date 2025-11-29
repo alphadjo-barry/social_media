@@ -77,7 +77,7 @@ public class SendMailServiceImpl implements SendMailService {
                             "          font-size:24px;letter-spacing:4px;font-weight:700;color:#1e293b;'>" + code + "</span>" +
                             "        </p>" +
                             "        <p style='margin:24px 0 0;color:#64748b;font-size:13px;'>" +
-                            "          Ce code est valable pendant <strong>15 minutes</strong>." +
+                            "          Ce code est valable pendant <strong>5 minutes</strong>." +
                             "        </p>" +
                             "      </td>" +
                             "    </tr>" +

@@ -1,3 +1,9 @@
+secrets:
+  db_user:
+    file: /secrets/db_user.txt
+  db_password:
+    file: /secrets/db_password.txt
+
 services:
   postgres:
     container_name: postgres_service
@@ -5,9 +11,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: social_media
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER_FILE: ${POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
