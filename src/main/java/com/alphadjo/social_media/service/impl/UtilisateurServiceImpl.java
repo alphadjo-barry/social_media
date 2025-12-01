@@ -2,6 +2,7 @@ package com.alphadjo.social_media.service.impl;
 
 import com.alphadjo.social_media.dto.password.PasswordRequest;
 import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
+import com.alphadjo.social_media.dto.validation.ResendCodeDto;
 import com.alphadjo.social_media.dto.validation.ValidationRequest;
 
 import com.alphadjo.social_media.entity.Role;
@@ -18,7 +19,6 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.Instant;
 import java.util.List;
@@ -150,6 +151,13 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         utilisateurRepository.save(utilisateur);
 
         return "Password has been changed successfully";
+    }
+
+    @Override
+    public void resendCode(ResendCodeDto dto) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(dto.email()).orElseThrow(
+                () -> new EntityNotFoundException("No user find with the provided email !"));
+        validationService.saveValidation(utilisateur);
     }
 
     private UtilisateurDto saveUserWithRole(UtilisateurDto dto, RoleEnum roleEnum) {

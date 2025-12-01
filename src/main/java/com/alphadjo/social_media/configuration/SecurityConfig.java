@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+@Configuration  
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/authenticate").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/utilisateurs/user").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/utilisateurs/enableAccount").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/utilisateurs/resendCode").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(

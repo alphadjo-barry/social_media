@@ -1,6 +1,8 @@
 package com.alphadjo.social_media.controller;
 
+import com.alphadjo.social_media.dto.password.PasswordRequest;
 import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
+import com.alphadjo.social_media.dto.validation.ResendCodeDto;
 import com.alphadjo.social_media.dto.validation.ValidationRequest;
 import com.alphadjo.social_media.dto.validation.ValidationResponse;
 import com.alphadjo.social_media.service.contract.MinioService;
@@ -73,4 +75,24 @@ public class UtilisateurController {
         return ResponseEntity.ok(new ValidationResponse(utilisateurService.enableAccount(request)));
     }
 
+    @PutMapping("/enabled/{id}")
+    public ResponseEntity<Boolean> enabledById(@PathVariable Long id){
+        return ResponseEntity.ok(utilisateurService.enableById(id));
+    }
+
+    @PutMapping("/disabled/{id}")
+    public ResponseEntity<Boolean> disabledById(@PathVariable Long id){
+        return ResponseEntity.ok(utilisateurService.disableById(id));
+    }
+
+    @PutMapping("/changePassword/{id}")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordRequest passwordRequest,@PathVariable Long id ){
+        return ResponseEntity.ok(utilisateurService.passwordChange(id, passwordRequest));
+    }
+
+    @PutMapping("/resendCode")
+    public ResponseEntity<Void> resendCode(@Valid @RequestBody ResendCodeDto dto){
+         utilisateurService.resendCode(dto);
+         return null;
+    }
 }

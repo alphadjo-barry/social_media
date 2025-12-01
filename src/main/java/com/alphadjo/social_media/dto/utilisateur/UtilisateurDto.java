@@ -2,9 +2,8 @@ package com.alphadjo.social_media.dto.utilisateur;
 import com.alphadjo.social_media.dto.role.RoleDto;
 import com.alphadjo.social_media.entity.Utilisateur;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
+
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

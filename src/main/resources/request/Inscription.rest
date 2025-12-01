@@ -89,3 +89,16 @@ Content-Type: application/json
   "email": "ndey.sira@gmail.com",
   "phone": "+33700000005"
 }
+
+### inscription hawa
+
+POST http://localhost:8080/api/v1/utilisateurs/user
+Content-Type: application/json
+
+{
+  "firstName": "Fofana",
+  "lastName": "hawa",
+  "password": "Alphadjo30901@",
+  "email": "hawa.fofana@gmail.com",
+  "phone": "+33700000012"
+}
