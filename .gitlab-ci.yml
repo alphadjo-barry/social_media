@@ -1,0 +1,36 @@
+default:
+  image: maven:3.9.0-eclipse-temurin-17
+
+stages:
+  - build
+  - test
+  - deploy
+variables:
+  USER: "alphadjo"
+  HOST: "192.168.1.119"
+
+build_job:
+  stage: build
+
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 1 week
+  rules:
+    - if : '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI-PIPELINE_SOURCE == "merge_request_event"'
+      
+test_job:
+  stage: test
+  script:
+    - mvn test
+  dependencies:
+    - "build_job"
+deploy_job:
+  stage: deploy
+  dependencies:
+    - "build_job"
+    - "test_job"
+  script:
+    - sshpass -p "$PASSWORD" scp target/*.jar $USER@$HOST:/serveur/apps/

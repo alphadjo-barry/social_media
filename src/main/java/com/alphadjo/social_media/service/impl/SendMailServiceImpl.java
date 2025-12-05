@@ -26,7 +26,6 @@ public class SendMailServiceImpl implements SendMailService {
     @Override
     public void sendMail(MessageRabbitDto messageRabbitDto) {
 
-
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
