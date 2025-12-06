@@ -11,7 +11,6 @@ variables:
 
 build_job:
   stage: build
-
   script:
     - mvn clean package -DskipTests
   artifacts:
@@ -19,14 +18,15 @@ build_job:
       - target/*.jar
     expire_in: 1 week
   rules:
-    - if : '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI-PIPELINE_SOURCE == "merge_request_event"'
-      
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI-PIPELINE_SOURCE == "merge_request_event"'
+
 test_job:
   stage: test
   script:
     - mvn test
   dependencies:
     - "build_job"
+
 deploy_job:
   stage: deploy
   dependencies:

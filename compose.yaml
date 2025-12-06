@@ -1,8 +1,10 @@
 secrets:
+  db_name:
+    file: ./secrets/db_name.txt
   db_user:
-    file: /secrets/db_user.txt
+    file: ./secrets/db_user.txt
   db_password:
-    file: /secrets/db_password.txt
+    file: ./secrets/db_password.txt
 
 services:
   postgres:
@@ -11,9 +13,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER_FILE: ${POSTGRES_USER}
-      POSTGRES_PASSWORD_FILE: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: /run/secrets/db_name
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -21,6 +23,10 @@ services:
       interval: 10s
       timeout: 30s
       retries: 3
+    secrets:
+      - db_user
+      - db_password
+      - db_name
 
   smtp4dev:
     image: rnwood/smtp4dev:v3
@@ -38,7 +44,7 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASSWORD=guest
   minio:
-    container_name: minio
+    container_name: minio     
     image: minio/minio:latest
     restart: unless-stopped
     ports:
