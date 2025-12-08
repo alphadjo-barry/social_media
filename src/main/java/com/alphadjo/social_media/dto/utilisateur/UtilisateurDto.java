@@ -2,6 +2,7 @@ package com.alphadjo.social_media.dto.utilisateur;
 import com.alphadjo.social_media.dto.role.RoleDto;
 import com.alphadjo.social_media.entity.Utilisateur;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 
 import jakarta.validation.constraints.*;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 
 import java.util.Set;
@@ -22,13 +24,19 @@ import java.util.stream.Collectors;
 public class UtilisateurDto {
 
     private Long id;
+
     @NotBlank(message = "firstName is required")
-
     private String firstName;
-    @NotBlank(message = "lastName is required")
 
+    @NotBlank(message = "lastName is required")
     private String lastName;
-    @NotBlank(message = "email is required")
+
+    @NotNull(message = "date of birth is required")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate birthday;
+
+    @NotBlank(message = "genre is required")
+    private String genre;
 
     @Email(message = "email is not valid")
     private String email;
@@ -60,6 +68,8 @@ public class UtilisateurDto {
                 .firstName(dto.firstName.toLowerCase())
                 .lastName(dto.lastName.toLowerCase())
                 .email(dto.email)
+                .genre(dto.genre)
+                .birthDay(dto.birthday)
                 .password(dto.password)
                 .phone(dto.phone)
                 .build();
@@ -75,6 +85,8 @@ public class UtilisateurDto {
                 .lastName(utilisateur.getLastName().toUpperCase())
                 .email(utilisateur.getEmail())
                 .phone(utilisateur.getPhone())
+                .birthday(utilisateur.getBirthDay())
+                .genre(utilisateur.getGenre())
                 .photoOriginalName(utilisateur.getPhotoOriginalName())
                 .picturePath(utilisateur.getPicturePath())
                 .roles(

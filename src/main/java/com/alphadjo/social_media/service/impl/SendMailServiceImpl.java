@@ -2,17 +2,16 @@ package com.alphadjo.social_media.service.impl;
 
 import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
 import com.alphadjo.social_media.service.contract.SendMailService;
-import io.minio.GetObjectArgs;
+
 import io.minio.MinioClient;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.time.Year;
 
 @Slf4j

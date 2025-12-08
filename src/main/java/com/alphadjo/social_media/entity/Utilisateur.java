@@ -1,5 +1,6 @@
 package com.alphadjo.social_media.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import java.util.List;
@@ -20,11 +22,16 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@Table(name = "utilisateurs")
 public class Utilisateur extends AbstractEntity implements UserDetails {
 
     private String firstName;
     private String lastName;
     private String email;
+    private String genre;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate birthDay;
 
     @JsonIgnore
     private String password;

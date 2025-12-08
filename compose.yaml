@@ -10,6 +10,7 @@ services:
   postgres:
     container_name: postgres_service
     image: postgres:17-alpine
+    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -39,6 +40,7 @@ services:
       - "25:25"
   rabbitmq:
     image: rabbitmq:3-management
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -48,7 +50,7 @@ services:
   minio:
     container_name: minio     
     image: minio/minio:latest
-    restart: unless-stopped
+    restart: always
     ports:
       - "9000:9000" # API S3
       - "9001:9001" # Interface web
