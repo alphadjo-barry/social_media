@@ -28,7 +28,7 @@ public class MailProducer implements MailProducerInterface {
                 RabbitConfig.EXCHANGE_NAME,
                 RabbitConfig.MAIL_ROUTING_KEY,
                 messageRabbitDto);
-
+        log.info("Sent a message to mail exchange");
         log.info("Message envoyé à RabbitMQ : {}", validation.getCode());
     }
 

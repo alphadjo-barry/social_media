@@ -38,14 +38,15 @@ public class SendMailServiceImpl implements SendMailService {
             helper.setFrom("alphadjo-tech@social-media.gn", "Social Media Team");
             helper.setTo(to);
             helper.setSubject("Votre code de validation Social Media");
-
+            /**
             InputStream fileStream = minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket("publications")
                             .object("eb658b31-f00f-4618-a2f2-801d799cf75d.jpeg")
                             .build());
+             */
 
-            helper.addAttachment("eb658b31-f00f-4618-a2f2-801d799cf75d.jpeg", new ByteArrayResource(fileStream.readAllBytes()));
+            //helper.addAttachment("eb658b31-f00f-4618-a2f2-801d799cf75d.jpeg", new ByteArrayResource(fileStream.readAllBytes()));
 
             String html =
                     "<!doctype html>" +
