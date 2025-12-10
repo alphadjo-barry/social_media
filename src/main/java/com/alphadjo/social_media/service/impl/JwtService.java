@@ -23,7 +23,6 @@ public class JwtService {
 
     public String generateToken(String email, String password){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-
         Authentication authentication = authenticateUser(authenticationToken);
 
         return createToken(authentication);

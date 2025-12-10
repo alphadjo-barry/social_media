@@ -22,6 +22,8 @@ Content-Type: application/json
 {
   "firstName": "Habibatou",
   "lastName": "Diallo",
+  "birthday": "07/06/1994",
+  "genre": "Homme",
   "password": "Alphadjo30901@",
   "email": "diallo.habibatou2710@gmail.com",
   "phone": "+33651598978"

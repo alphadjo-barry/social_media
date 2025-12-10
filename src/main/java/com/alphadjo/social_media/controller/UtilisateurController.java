@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin("http://localhost:5173/")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/utilisateurs")

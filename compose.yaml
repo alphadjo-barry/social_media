@@ -5,7 +5,6 @@ secrets:
     file: ./secrets/db_user.txt
   db_password:
     file: ./secrets/db_password.txt
-
 services:
   postgres:
     container_name: postgres_service
