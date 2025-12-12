@@ -1,8 +1,7 @@
 package com.alphadjo.social_media.dto.publication;
 
-import com.alphadjo.social_media.dto.commentaire.CommentaireDto;
 import com.alphadjo.social_media.dto.picture.PublicationPictureDto;
-import com.alphadjo.social_media.dto.reaction.ReactionDto;
+
 import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
 
 import com.alphadjo.social_media.entity.Publication;
@@ -15,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,6 +37,7 @@ public class PublicationDto {
     private long reactions;
     private long commentaires;
     private Set<PublicationPictureDto> pictures;
+    private LocalDateTime createdAt;
 
     public static Publication toEntity(PublicationDto publicationDto){
 
@@ -55,6 +56,7 @@ public class PublicationDto {
                 .id(publication.getId())
                 .legende(publication.getLegende())
                 .auteur(UtilisateurDto.fromEntity(publication.getAuteur()))
+                    .createdAt(publication.getCreatedAt())
                 .reactions(
                         publication.getReactions() != null ? publication.getReactions().stream()
                                 .distinct().count() : 0)

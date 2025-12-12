@@ -5,7 +5,6 @@ import com.alphadjo.social_media.exceptions.FileStorageException;
 import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 import com.alphadjo.social_media.service.contract.AuthenticationUserService;
 import com.alphadjo.social_media.service.contract.MinioService;
-import com.alphadjo.social_media.service.contract.UtilisateurService;
 import io.minio.*;
 
 import io.minio.http.Method;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class MinioServiceImpl implements MinioService {
 
     private final MinioClient minioClient;
-    private final UtilisateurService utilisateurService;
     private final UtilisateurRepository utilisateurRepository;
     private final AuthenticationUserService authenticationUserService;
 
@@ -35,7 +33,6 @@ public class MinioServiceImpl implements MinioService {
     public void uploadProfilePicture(String filename, InputStream inputStream, String contentType, String bucketName) {
 
         try{
-
             Jwt jwt =authenticationUserService.getAuthenticatedUser();
 
             Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
@@ -52,7 +49,7 @@ public class MinioServiceImpl implements MinioService {
                             .contentType(contentType)
                             .build());
 
-            String pictureUrl = this.getPictureProfileUrlByFileName(filename);
+            String pictureUrl = this.getUrlPictureByFilenameAndByBucket(filename, "profiles");
             utilisateur.setPicturePath(pictureUrl);
             utilisateurRepository.save(utilisateur);
         }
@@ -73,7 +70,7 @@ public class MinioServiceImpl implements MinioService {
                             .contentType(contentType)
                             .build());
 
-            return this.getPictureProfileUrlByFileName(filename);
+            return this.getUrlPictureByFilenameAndByBucket(filename, bucketName);
         }
         catch (Exception e){
             log.info(e.getMessage());
@@ -90,7 +87,7 @@ public class MinioServiceImpl implements MinioService {
         long maxSize = 6 * 1024 * 1024;
 
         if(file.getSize() > maxSize){
-            throw new IllegalArgumentException("File size is too large, max size is 5");
+            throw new IllegalArgumentException("File size is too large, max size is 5 Mo");
         }
 
         String originalFilename = file.getOriginalFilename();
@@ -120,11 +117,11 @@ public class MinioServiceImpl implements MinioService {
             throw new RuntimeException("User has no profile picture");
         }
 
-        return this.getFileFromBucket(filename) ;
+        return this.getFileFromBucket(filename, "profiles") ;
     }
 
     @Override
-    public String getPictureProfileUrlByFileName(String fileName) {
+    public String getUrlPictureByFilenameAndByBucket(String fileName, String bucketName) {
 
         Jwt jwt = authenticationUserService.getAuthenticatedUser();
 
@@ -135,16 +132,16 @@ public class MinioServiceImpl implements MinioService {
             throw new RuntimeException("The picture is empty");
         }
 
-        return this.getFileFromBucket(utilisateur.getPhotoOriginalName());
+        return this.getFileFromBucket(fileName, bucketName);
     }
 
-    private String getFileFromBucket(String filename) {
+    private String getFileFromBucket(String filename, String bucketName) {
 
         try{
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
-                            .bucket("profiles")
+                            .bucket(bucketName)
                             .object(filename)
                             .build()
             );

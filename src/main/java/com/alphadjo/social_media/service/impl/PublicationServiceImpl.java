@@ -1,6 +1,5 @@
 package com.alphadjo.social_media.service.impl;
 
-import com.alphadjo.social_media.dto.picture.PublicationPictureDto;
 import com.alphadjo.social_media.dto.publication.PublicationDto;
 import com.alphadjo.social_media.entity.Publication;
 import com.alphadjo.social_media.entity.PublicationPicture;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service

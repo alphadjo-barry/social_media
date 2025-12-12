@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class JwtService {
         return JwtClaimsSet.builder()
                 .subject(authentication.getName())
                 .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(60 * 30)) // 30 Minutes
+                .expiresAt(Instant.now().plus(1, ChronoUnit.DAYS)) // 1j
                 .claim("roles", authorities)
                 .build();
     }

@@ -10,5 +10,5 @@ public interface MinioService {
     String uploadPublicationPicture(String filename, InputStream inputStream, String contentType, String bucketName);
     String pictureName(MultipartFile file);
     String getAuthUserPictureProfile();
-    String getPictureProfileUrlByFileName(String fileName);
+    String getUrlPictureByFilenameAndByBucket(String fileName, String bucketName);
 }

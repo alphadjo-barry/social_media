@@ -43,7 +43,7 @@ public class ValidationServiceImpl implements ValidationService {
     public Validation findByCode(String code) {
 
        return validationRepository.findByCode(code)
-               .orElseThrow(() -> new EntityNotFoundException("Validation code is incorrect"));
+               .orElseThrow(() -> new EntityNotFoundException("validation code is incorrect or not found"));
     }
 
     @Override
