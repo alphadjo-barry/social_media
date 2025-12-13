@@ -8,6 +8,7 @@ import com.alphadjo.social_media.repository.contract.ValidationRepository;
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -51,5 +52,10 @@ public class ValidationServiceImpl implements ValidationService {
         validation.setValidatedAt(Instant.now());
         validation.setValidated(true);
         validationRepository.save(validation);
+    }
+
+    @Scheduled(cron = "0  */5 * * * *")
+    public void deleteExpiredValidation(){
+        validationRepository.deleteExpired(Instant.now().minus(5, ChronoUnit.MINUTES));
     }
 }
