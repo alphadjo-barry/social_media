@@ -6,6 +6,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,6 +61,15 @@ public class ApplicationControllerAdvice {
                 .build();
 
         return ResponseEntity.status(404).body(error);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorEntity> handleException(DisabledException exception){
+        ErrorEntity error = ErrorEntity.builder()
+                .code("403")
+                .message(exception.getMessage())
+                .build();
+        return ResponseEntity.status(403).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -163,9 +163,12 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         Utilisateur utilisateur = UtilisateurDto.toEntity(dto);
 
         if (utilisateurRepository.findByEmail(utilisateur.getEmail()).isPresent()) {
-            throw new EntityExistsException("Email already exists in the system, please try another email address");
+            throw new EntityExistsException("Email already exists in the system, try another");
         }
 
+        if(utilisateurRepository.findByPhone(utilisateur.getPhone()).isPresent()){
+            throw new EntityExistsException("Phone number already exists in the system,try another");
+        }
         Role role = roleRepository.findByName(roleEnum.name())
                 .orElseGet(() -> roleRepository.save(Role.builder().name(roleEnum.name()).build()));
 

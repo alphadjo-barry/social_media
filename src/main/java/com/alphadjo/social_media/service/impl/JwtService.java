@@ -2,6 +2,7 @@ package com.alphadjo.social_media.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,21 +24,24 @@ public class JwtService {
     private final AuthenticationManager authenticationManager;
 
     public String generateToken(String email, String password){
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
         Authentication authentication = authenticateUser(authenticationToken);
 
         return createToken(authentication);
     }
 
     private Authentication authenticateUser(UsernamePasswordAuthenticationToken authenticationToken) {
-
         try {
+
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return authentication;
 
-        } catch (Exception e) {
-            throw new RuntimeException("Username or password is incorrect");
+        } catch (DisabledException e) {
+            throw new DisabledException("Compte utilisateur non activé pour l'instant !");
+        } catch (Exception e){
+                throw new RuntimeException("Username or password is incorrect");
         }
     }
 

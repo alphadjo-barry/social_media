@@ -3,6 +3,7 @@ package com.alphadjo.social_media.service.impl;
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 import lombok.AllArgsConstructor;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,9 +32,9 @@ public class DomaineUserDetailService implements UserDetailsService {
                 utilisateur.getEmail(),
                 utilisateur.getPassword(),
                 utilisateur.isEnabled(),
-                utilisateur.isEnabled(),
-                utilisateur.isEnabled(),
-                utilisateur.isEnabled(),
+               true,
+                true,
+                true,
                 authorities);
     }
 

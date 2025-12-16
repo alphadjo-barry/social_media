@@ -4,13 +4,12 @@ import com.alphadjo.social_media.dto.publication.PublicationDto;
 import com.alphadjo.social_media.service.contract.PublicationService;
 
 import lombok.AllArgsConstructor;
-import okhttp3.Response;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @AllArgsConstructor

@@ -14,7 +14,7 @@ public class AuthenticationUserServiceImpl implements AuthenticationUserService 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof Jwt){
-            return (Jwt) authentication.getPrincipal() ;
+            return (Jwt) authentication.getPrincipal();
         }
         return null;
     }

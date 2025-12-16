@@ -4,7 +4,10 @@ import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
 
 import com.alphadjo.social_media.entity.Commentaire;
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,12 +17,16 @@ import lombok.*;
 public class CommentaireDto {
 
     private Long id;
-    @Lob
+
+    @NotBlank(message = "The content is required")
     private String contenu;
 
+    @NotNull(message = "Publication is required")
     private Long  publicationId;
 
     private UtilisateurDto auteur;
+
+    private LocalDateTime createdAt;
 
     public static Commentaire toEntity(CommentaireDto commentaireDto) {
 
@@ -27,7 +34,6 @@ public class CommentaireDto {
 
         return Commentaire.builder()
                 .contenu(commentaireDto.contenu)
-                .auteur(UtilisateurDto.toEntity(commentaireDto.auteur))
                 .build();
     }
 
@@ -40,6 +46,7 @@ public class CommentaireDto {
                 .contenu(commentaire.getContenu())
                 .publicationId(commentaire.getPublication().getId())
                 .auteur(UtilisateurDto.fromEntity(commentaire.getAuteur()))
+                .createdAt(commentaire.getCreatedAt())
                 .build();
     }
 
