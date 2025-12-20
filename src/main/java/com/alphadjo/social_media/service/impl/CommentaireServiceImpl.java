@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +30,7 @@ public class CommentaireServiceImpl implements CommentaireService {
     private final UtilisateurRepository utilisateurRepository;
     private final PublicationRepository publicationRepository;
     private final AuthenticationUserService authenticationUserService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public List<CommentaireDto> findAll() {
@@ -37,6 +42,7 @@ public class CommentaireServiceImpl implements CommentaireService {
         return null;
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     @Override
     public CommentaireDto save(CommentaireDto commentaireDto) {
 
@@ -52,7 +58,7 @@ public class CommentaireServiceImpl implements CommentaireService {
         commentaire.setPublication(publication);
         log.info("Commentaire saved : {}", commentaire);
         Commentaire savedCommentaire = commentaireRepository.save(commentaire);
-
+        messagingTemplate.convertAndSend("/topic/publications/"+publication.getId()+"/commentaires", CommentaireDto.fromEntity(savedCommentaire));
         return CommentaireDto.fromEntity(savedCommentaire);
     }
 

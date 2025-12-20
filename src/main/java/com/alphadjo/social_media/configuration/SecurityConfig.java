@@ -1,11 +1,10 @@
 package com.alphadjo.social_media.configuration;
 
-import com.alphadjo.social_media.service.impl.DomaineUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
@@ -34,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/utilisateurs/user").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/utilisateurs/enableAccount").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/utilisateurs/resendCode").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(
