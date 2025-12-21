@@ -123,7 +123,7 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public String getUrlPictureByFilenameAndByBucket(String fileName, String bucketName) {
 
-        Jwt jwt = authenticationUserService.getAuthenticatedUser();
+        Jwt jwt = authenticationUserService. getAuthenticatedUser();
 
         Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                 () -> new RuntimeException("User not found with in the system"));

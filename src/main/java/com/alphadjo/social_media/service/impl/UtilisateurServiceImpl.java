@@ -159,6 +159,13 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         validationService.saveValidation(utilisateur);
     }
 
+    @Override
+    public List<UtilisateurDto> search(String q) {
+        return this.utilisateurRepository.search(q).stream()
+                .map(UtilisateurDto::fromEntity)
+                .toList();
+    }
+
     private UtilisateurDto saveUserWithRole(UtilisateurDto dto, RoleEnum roleEnum) {
         Utilisateur utilisateur = UtilisateurDto.toEntity(dto);
 

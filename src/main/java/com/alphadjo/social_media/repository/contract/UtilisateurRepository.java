@@ -2,11 +2,22 @@ package com.alphadjo.social_media.repository.contract;
 
 import com.alphadjo.social_media.entity.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     Optional<Utilisateur> findByEmail(String email);
     Optional<Utilisateur> findByPhotoOriginalName(String filename);
     Optional<Utilisateur> findByPhone (String phone);
+
+    @Query(value = """
+        SELECT u FROM Utilisateur u 
+            WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :q, '%'))
+            OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :q, '%'))
+            OR LOWER(u.email) LIKE LOWER(CONCAT('%', :q, '%')) 
+    """)
+    List<Utilisateur> search(@Param("q") String q);
 }

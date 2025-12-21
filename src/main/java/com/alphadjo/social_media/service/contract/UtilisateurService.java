@@ -6,6 +6,8 @@ import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
 import com.alphadjo.social_media.dto.validation.ResendCodeDto;
 import com.alphadjo.social_media.dto.validation.ValidationRequest;
 
+import java.util.List;
+
 public interface UtilisateurService extends AbstractService<UtilisateurDto>{
 
     UtilisateurDto saveAdmin(UtilisateurDto dto);
@@ -15,5 +17,6 @@ public interface UtilisateurService extends AbstractService<UtilisateurDto>{
     boolean disableById(Long id);
     String passwordChange(Long id, PasswordRequest request);
     void resendCode(ResendCodeDto resendCodeDto);
+    List<UtilisateurDto> search(String search);
 
 }

@@ -1,6 +1,9 @@
 package com.alphadjo.social_media.service.impl;
 
-import lombok.AllArgsConstructor;
+import com.alphadjo.social_media.entity.Utilisateur;
+import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,15 +16,28 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class JwtService {
 
     private final JwtEncoder jwtEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UtilisateurRepository utilisateurRepository;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
+    @Value("${app.default-image}")
+    private String defaultAvatar;
+
+    public JwtService(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager, UtilisateurRepository utilisateurRepository) {
+        this.jwtEncoder = jwtEncoder;
+        this.authenticationManager = authenticationManager;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     public String generateToken(String email, String password){
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -58,11 +74,24 @@ public class JwtService {
 
     private JwtClaimsSet getClaimsFromToken(Authentication authentication, Set<String> authorities) {
 
+        Utilisateur utilisateur = utilisateurRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        String picture =
+                utilisateur.getPicturePath() != null && !utilisateur.getPicturePath().isBlank()
+                        ? utilisateur.getPicturePath()
+                        : baseUrl + defaultAvatar;
+
         return JwtClaimsSet.builder()
                 .subject(authentication.getName())
                 .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plus(1, ChronoUnit.DAYS)) // 1j
+                .expiresAt(Instant.now().plus(1, ChronoUnit.DAYS))
                 .claim("roles", authorities)
+                .claim("fullName", utilisateur.getFirstName() + " " + utilisateur.getLastName())
+                .claim("email", utilisateur.getEmail())
+                .claim("userId", utilisateur.getId())
+                .claim("picturePath", picture)
                 .build();
     }
 }

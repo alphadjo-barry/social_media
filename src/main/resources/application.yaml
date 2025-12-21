@@ -51,11 +51,17 @@ server:
 app:
   jwt:
     secret-key: 3e9f2d47c21f4f88b6312af7f0c46a62db88e21c472a13e8d5118ab0b35b73f0
+  base-url: http://localhost:8080
+  default-image: /images/default.jpeg
 
 minio:
   endpoint: http://localhost:9000
   access-key: minioadmin
   secret-key: minioadmin
   bucket-name: profiles
+
+logging:
+  level:
+    com.social.media: DEBUG
 
 

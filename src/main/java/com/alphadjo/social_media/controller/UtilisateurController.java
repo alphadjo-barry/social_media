@@ -51,7 +51,7 @@ public class UtilisateurController {
         return ResponseEntity.ok(utilisateurService.saveAdmin(utilisateurDto));
     }
 
-    @PostMapping("/profile-picture")
+    @PutMapping("/profile-picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) throws IOException {
 
             String fileName = minioService.pictureName(file);
@@ -64,6 +64,12 @@ public class UtilisateurController {
             );
 
             return ResponseEntity.ok(fileName);
+    }
+
+    @GetMapping("/search")
+    @ResponseBody
+    public List<UtilisateurDto> search(@RequestParam("q") String q){
+        return utilisateurService.search(q);
     }
 
     @GetMapping("/profile-picture")
@@ -96,4 +102,5 @@ public class UtilisateurController {
          utilisateurService.resendCode(dto);
          return null;
     }
+
 }
