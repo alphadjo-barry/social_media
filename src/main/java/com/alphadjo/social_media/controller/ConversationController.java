@@ -2,12 +2,10 @@ package com.alphadjo.social_media.controller;
 
 import com.alphadjo.social_media.dto.ConversationDto;
 import com.alphadjo.social_media.service.contract.ConversationService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -20,15 +18,18 @@ public class ConversationController {
 
     private final ConversationService conversationService;
 
-    public ResponseEntity<ConversationDto> saveConversation(ConversationDto conversationDto){
+    @PostMapping("/requests")
+    public ResponseEntity<ConversationDto> saveConversation(@RequestBody @Valid ConversationDto conversationDto){
         return ResponseEntity.ok(this.conversationService.save(conversationDto));
     }
 
+    @GetMapping("/sent")
     public ResponseEntity<Set<ConversationDto>> findByEnvoyeurId(){
 
         return ResponseEntity.ok(this.conversationService.findByEnvoyeurId());
     }
 
+    @GetMapping("/receive")
     public ResponseEntity<Set<ConversationDto>> findByRecepteurId(){
         return ResponseEntity.ok(this.conversationService.findByRecepteurId());
     }
