@@ -1,6 +1,7 @@
 package com.alphadjo.social_media.controller;
 
-import com.alphadjo.social_media.dto.ConversationDto;
+import com.alphadjo.social_media.dto.conversation.AcceptRequestDto;
+import com.alphadjo.social_media.dto.conversation.ConversationDto;
 import com.alphadjo.social_media.service.contract.ConversationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,10 @@ public class ConversationController {
     public ResponseEntity<Set<ConversationDto>> findByRecepteurId(){
         return ResponseEntity.ok(this.conversationService.findByRecepteurId());
     }
+
+    @PutMapping("/accepted/{id}")
+    public ResponseEntity<ConversationDto> acceptConversation(@RequestBody AcceptRequestDto dto, @PathVariable Long id){
+        return ResponseEntity.ok(this.conversationService.acceptedConversation(dto, id));
+    }
+
 }

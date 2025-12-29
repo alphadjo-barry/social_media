@@ -1,4 +1,4 @@
-package com.alphadjo.social_media;
+package com.alphadjo.social_media.unitaires;
 
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.entity.Role;
@@ -6,23 +6,23 @@ import com.alphadjo.social_media.entity.Role;
 import com.alphadjo.social_media.repository.contract.RoleRepository;
 import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest(showSql = false)
-@ActiveProfiles("test")
 public class UtilisateurRepositoryTest {
 
     private static final Logger log = LoggerFactory.getLogger(UtilisateurRepositoryTest.class);
@@ -53,59 +53,73 @@ public class UtilisateurRepositoryTest {
         Role savedRoleAdmin = roleRepository.save(roleAdmin);
 
         utilisateur = Utilisateur.builder()
-                .firstName("Alphadjo")
-                .lastName("Barry")
-                .email("alphadiobiya@gmail.com")
-                .password("Alphadjo30901@")
-                .phone("+33661474742")
-                .isActive(false)
-                .genre("HOMME")
-                .roles(new HashSet<>(Collections.singletonList(savedRoleUser)))
-                .photoOriginalName(null)
-                .adresses(new ArrayList<>())
-                .birthDay(LocalDate.of(1999, 12, 12))
-                .build();
+                    .firstName("Alphadjo")
+                    .lastName("Barry")
+                    .email("alphadiobiya@gmail.com")
+                    .password("Alphadjo30901@")
+                    .phone("+33661474742")
+                    .isActive(false)
+                    .genre("HOMME")
+                    .roles(new HashSet<>(Collections.singletonList(savedRoleUser)))
+                    .photoOriginalName(null)
+                    .adresses(new ArrayList<>())
+                    .birthDay(LocalDate.of(1999, 12, 12))
+                    .build();
 
         this.utilisateurRepository.save(utilisateur);
         log.info(() -> "User saved with id: " + utilisateur.getId());
     }
 
     @Test
+    @DisplayName("Should return empty list when no user added")
+    public void shouldReturnEmptyListWhenNoOneUserAdded(){
+        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
+        assertThat(utilisateurs).isNotEmpty();
+        assertThat(utilisateurs.size()).isEqualTo(1);
+    }
+
+
+    @Test
+    @DisplayName("Should find user by id")
     public void shouldFindUserById() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findById(utilisateur.getId());
-        assertTrue(utilisateurOptional.isPresent());
+        assertThat(utilisateurOptional).isPresent();
     }
 
     /**
-     * Finds user by email and validates email
+     * Finds user by email and validates email with AssertJ
      */
     @Test
-    public void shouldFindUserByEmail() {
+    @DisplayName("Should find user by email")
+    public void shouldFindUserByEmailWithAssertJ() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
-        assertTrue(utilisateurOptional.isPresent());
-        assertEquals("alphadiobiya@gmail.com", utilisateurOptional.get().getEmail());
+        assertThat(utilisateurOptional).isPresent();
+        assertThat("alphadiobiya@gmail.com").isEqualTo(utilisateurOptional.get().getEmail());
     }
 
     /**
      * Finds user by phone and validates phone number
      */
     @Test
+    @DisplayName("Should find user by phone")
     public void shouldFindUserByPhone() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByPhone(utilisateur.getPhone());
-        assertTrue(utilisateurOptional.isPresent());
-        assertEquals("+33661474742", utilisateurOptional.get().getPhone());
+        assertThat(utilisateurOptional).isPresent();
+        assertThat(utilisateurOptional.get().getPhone()).isEqualTo("+33661474742");
     }
 
     @Test
+    @DisplayName("Should return empty when user email is not found")
     public void shouldReturnEmptyWhenEMailDoesNotExist() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail("inconu.email@gmail.com");
-        assertTrue(utilisateurOptional.isEmpty());
+        assertThat(utilisateurOptional).isEmpty();
     }
 
     /**
      * Confirms user status can be updated and persisted
      */
     @Test
+    @DisplayName("Should return user with updated status")
     public void shouldReturnIsActiveUserWhenStatusIsUpdate(){
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
         assertTrue(utilisateurOptional.isPresent());
@@ -115,41 +129,66 @@ public class UtilisateurRepositoryTest {
         this.utilisateurRepository.save(updateUser);
 
         utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
-        assertTrue(utilisateurOptional.isPresent());
-        assertTrue(utilisateurOptional.get().isActive());
+        assertThat(utilisateurOptional).isPresent();
+        assertThat(utilisateurOptional.get().isActive()).isTrue();
     }
 
     /**
      * Confirms deletion by verifying absence after removal
      */
     @Test
-    public void shouldReturnNullWhenUserIsDeleted(){
+    @DisplayName("Should return null when user is deleted")
+    public void shouldReturnEmptyWhenUserIsDeleted(){
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
         assertTrue(utilisateurOptional.isPresent());
 
         this.utilisateurRepository.delete(utilisateurOptional.get());
         utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
-        assertTrue(utilisateurOptional.isEmpty());
+        assertThat(utilisateurOptional).isEmpty();
     }
 
+    /**
+     * confirms that the user role is ROLE_USER
+     */
     @Test
-    public void shouldContainRoledUSerTest(){
-        assertTrue(utilisateur.getRoles().contains(roleUser));
+    @DisplayName("Should return user with role ROLE_USER")
+    public void shouldContainRoledUserTest(){
+        assertThat(utilisateur.getRoles()).contains(roleUser);
     }
 
+    /**
+     * confirms that the user role is not ROLE_ADMIN
+     */
     @Test
+    @DisplayName("Should not return user with role ROLE_ADMIN")
     public void shouldNotHaveRoleAdminTest(){
-        assertFalse(utilisateur.getRoles().contains(roleAdmin));
+        assertThat(utilisateur.getRoles()).doesNotContain(roleAdmin);
     }
 
+    /**
+     * confirms that the user has no address
+     */
     @Test
+    @DisplayName("Should return user with no address")
     public void shouldAdresseBeEmpty(){
-        assertTrue(utilisateur.getAdresses().isEmpty());
+       assertThat(utilisateur.getAdresses()).isEmpty();
     }
 
-    @AfterEach
-    public void tearDown(){
-        utilisateurRepository.deleteAll();
-        roleRepository.deleteAll();
+    /**
+     * confirms that the user is born before today
+     */
+    @Test
+    @DisplayName("Should return user born before today")
+    public void shouldReturnThatUserIsBornBeforeToDay(){
+        assertThat(utilisateur.getBirthDay()).isBefore(LocalDate.now());
+    }
+
+    /**
+     * confirms that the user is not born in future
+     */
+    @Test
+    @DisplayName("Should return user not born in future")
+    public void shouldReturnThatUserIsNotBornInFuture(){
+        assertThat(utilisateur.getBirthDay().isAfter(LocalDate.now())).isFalse();
     }
 }

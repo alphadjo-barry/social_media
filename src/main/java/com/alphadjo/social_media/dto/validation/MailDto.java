@@ -1,6 +1,6 @@
 package com.alphadjo.social_media.dto.validation;
 
-public record MessageRabbitDto(
+public record MailDto(
         String code,
         String email,
         String firstName,

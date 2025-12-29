@@ -2,10 +2,14 @@ package com.alphadjo.social_media.dto.role;
 
 import com.alphadjo.social_media.entity.Role;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class RoleDto {
 

@@ -1,6 +1,7 @@
 package com.alphadjo.social_media.service.impl;
 
-import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
+import com.alphadjo.social_media.dto.validation.MailDto;
+
 import com.alphadjo.social_media.service.contract.SendMailService;
 
 import io.minio.MinioClient;
@@ -23,16 +24,16 @@ public class SendMailServiceImpl implements SendMailService {
     private final MinioClient minioClient;
 
     @Override
-    public void sendMail(MessageRabbitDto messageRabbitDto) {
+    public void sendMail(MailDto dto) {
 
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            String to = messageRabbitDto.email();
-            String firstName = messageRabbitDto.firstName();
-            String lastName = messageRabbitDto.lastName();
-            String code = messageRabbitDto.code();
+            String to = dto.email();
+            String firstName = dto.firstName();
+            String lastName = dto.lastName();
+            String code = dto.code();
 
             helper.setFrom("alphadjo-tech@social-media.gn", "Social Media Team");
             helper.setTo(to);

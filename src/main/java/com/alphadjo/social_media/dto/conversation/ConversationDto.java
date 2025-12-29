@@ -1,9 +1,8 @@
-package com.alphadjo.social_media.dto;
+package com.alphadjo.social_media.dto.conversation;
 
 import com.alphadjo.social_media.dto.utilisateur.UtilisateurDto;
 import com.alphadjo.social_media.entity.Conversation;
 import com.alphadjo.social_media.enums.ConversationStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

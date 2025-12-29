@@ -1,6 +1,7 @@
 package com.alphadjo.social_media.service.impl;
 
-import com.alphadjo.social_media.dto.ConversationDto;
+import com.alphadjo.social_media.dto.conversation.AcceptRequestDto;
+import com.alphadjo.social_media.dto.conversation.ConversationDto;
 import com.alphadjo.social_media.entity.Conversation;
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.enums.ConversationStatus;
@@ -13,13 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 @AllArgsConstructor
 @Service
@@ -59,10 +61,8 @@ public class ConversationServiceImpl implements ConversationService {
         conversation.setEnvoyeur(envoyeur);
         conversation.setRecepteur(recepteur);
         ConversationDto dto =  ConversationDto.fromEntity(conversationRepository.save(conversation));
-        simpMessagingTemplate.convertAndSendToUser(recepteur.getEmail(), "/queue/receive", dto);
-        simpMessagingTemplate.convertAndSendToUser(envoyeur.getEmail(), "/queue/receive", dto);
-
-        Principal principal;
+        simpMessagingTemplate.convertAndSend("/queue/receive/"+recepteur.getId(), dto);
+        simpMessagingTemplate.convertAndSend("/queue/send/"+envoyeur.getId(), dto);
 
         return dto;
     }
@@ -98,6 +98,20 @@ public class ConversationServiceImpl implements ConversationService {
       return this.conversationRepository.findByRecepteurId(utilisateur.getId()).stream()
               .map(ConversationDto::fromEntity)
               .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ConversationDto acceptedConversation(AcceptRequestDto acceptRequestDto, Long id) {
+       Conversation conversation = this.conversationRepository.findById(id).orElseThrow(
+               () -> new RuntimeException("Conversation not found with id: " + id + " in the system"));
+       conversation.setStatus(ConversationStatus.ACCEPTED);
+       Conversation conversationUpdated = conversationRepository.save(conversation);
+       ConversationDto dto = ConversationDto.fromEntity(conversationUpdated);
+
+       simpMessagingTemplate.convertAndSend("/queue/receive/"+acceptRequestDto.recepteurId(), dto);
+       simpMessagingTemplate.convertAndSend("/queue/send/"+acceptRequestDto.envoyeurId(), dto);
+
+        return dto;
     }
 
 }

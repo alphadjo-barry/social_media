@@ -3,6 +3,7 @@ import com.alphadjo.social_media.dto.role.RoleDto;
 import com.alphadjo.social_media.entity.Utilisateur;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 
 import jakarta.validation.constraints.*;
@@ -45,8 +46,9 @@ public class UtilisateurDto {
     @Size(min = 8, message = "password must be at least 8 characters long")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial."
+            message = "Mot de passe pas robuste !"
     )
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank(message = "phone is required")

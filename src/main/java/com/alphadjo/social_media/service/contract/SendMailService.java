@@ -1,8 +1,8 @@
 package com.alphadjo.social_media.service.contract;
 
-import com.alphadjo.social_media.dto.validation.MessageRabbitDto;
+import com.alphadjo.social_media.dto.validation.MailDto;
 
 public interface SendMailService {
 
-    void sendMail(MessageRabbitDto messageRabbitDto);
+    void sendMail(MailDto mailDto);
 }

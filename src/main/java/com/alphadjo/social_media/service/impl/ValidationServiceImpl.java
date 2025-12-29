@@ -1,13 +1,16 @@
 package com.alphadjo.social_media.service.impl;
 
+import com.alphadjo.social_media.dto.validation.MailDto;
 import com.alphadjo.social_media.entity.Utilisateur;
 import com.alphadjo.social_media.entity.Validation;
-import com.alphadjo.social_media.rabbit.MailProducer;
+import com.alphadjo.social_media.kafka.EmailProducer;
 import com.alphadjo.social_media.repository.contract.ValidationRepository;
 
 import com.alphadjo.social_media.service.contract.ValidationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,10 @@ import java.util.Random;
 public class ValidationServiceImpl implements ValidationService {
 
     private final ValidationRepository validationRepository;
-    private final MailProducer mailProducer;
+    private final EmailProducer emailProducer;
+    public static final String MAIL_TOPIC = "mail-topic";
+
+    private final KafkaTemplate<String,MailDto> kafkaTemplate;
 
     @Override
     public void saveValidation(Utilisateur utilisateur) {
@@ -37,7 +43,12 @@ public class ValidationServiceImpl implements ValidationService {
         validation.setUtilisateur(utilisateur);
 
         validationRepository.save(validation);
-        mailProducer.sendValidation(validation);
+        MailDto mailDto = new MailDto(
+                validation.getCode(),
+                validation.getUtilisateur().getEmail(),
+                validation.getUtilisateur().getFirstName(),
+                validation.getUtilisateur().getLastName());
+        emailProducer.sendMail(MAIL_TOPIC, mailDto);
     }
 
     @Override

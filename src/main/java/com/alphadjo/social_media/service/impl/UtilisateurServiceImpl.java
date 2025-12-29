@@ -15,10 +15,14 @@ import com.alphadjo.social_media.repository.contract.UtilisateurRepository;
 import com.alphadjo.social_media.service.contract.AuthenticationUserService;
 import com.alphadjo.social_media.service.contract.UtilisateurService;
 import com.alphadjo.social_media.service.contract.ValidationService;
+
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -33,8 +37,8 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UtilisateurServiceImpl implements UtilisateurService {
-
     private final ValidationService validationService;
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
@@ -50,8 +54,9 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
+    @Cacheable(value = "userCache", key = "#id")
     public UtilisateurDto findById(Long id) {
-
+        log.info("Fetching user with id : {}", id);
         Utilisateur utilisateur = utilisateurRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Utilisateur not found !"));
 
@@ -176,6 +181,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         if(utilisateurRepository.findByPhone(utilisateur.getPhone()).isPresent()){
             throw new EntityExistsException("Phone number already exists in the system,try another");
         }
+
         Role role = roleRepository.findByName(roleEnum.name())
                 .orElseGet(() -> roleRepository.save(Role.builder().name(roleEnum.name()).build()));
 

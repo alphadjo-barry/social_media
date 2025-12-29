@@ -4,6 +4,7 @@ spring:
   mail:
     host: localhost
     port: 25
+    default-encoding: UTF-8
   config:
     import: optional:file:./env.properties
   datasource:
@@ -13,7 +14,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
-      idle-timeout: 30000
+      idle-timeout: 20000
       minimum-idle: 5
       max-lifetime: 1800000
       connection-timeout: 20000
@@ -26,24 +27,32 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+  cache:
+    type: redis
 
-#  kafka:
-#   bootstrap-servers: localhost:9092
-#    consumer:
-#      group-id: mail-service
-#     auto-offset-reset: earliest
-#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#     value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-#      properties:
-#       spring.json.trusted.packages: "*"
-#    producer:
-#     key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 20000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      group-id: mail-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8080
