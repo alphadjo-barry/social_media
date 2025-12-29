@@ -12,10 +12,12 @@ import com.alphadjo.social_media.service.contract.ConversationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -105,6 +107,7 @@ public class ConversationServiceImpl implements ConversationService {
        Conversation conversation = this.conversationRepository.findById(id).orElseThrow(
                () -> new RuntimeException("Conversation not found with id: " + id + " in the system"));
        conversation.setStatus(ConversationStatus.ACCEPTED);
+       conversation.setAcceptedOrRejectedAt(Instant.now());
        Conversation conversationUpdated = conversationRepository.save(conversation);
        ConversationDto dto = ConversationDto.fromEntity(conversationUpdated);
 

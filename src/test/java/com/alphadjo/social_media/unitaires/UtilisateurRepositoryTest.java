@@ -93,8 +93,10 @@ public class UtilisateurRepositoryTest {
     @DisplayName("Should find user by email")
     public void shouldFindUserByEmailWithAssertJ() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
-        assertThat(utilisateurOptional).isPresent();
-        assertThat("alphadiobiya@gmail.com").isEqualTo(utilisateurOptional.get().getEmail());
+        assertThat(utilisateurOptional).isPresent()
+                .get()
+                .extracting(Utilisateur::getEmail)
+                .isEqualTo("alphadiobiya@gmail.com");
     }
 
     /**
@@ -104,8 +106,11 @@ public class UtilisateurRepositoryTest {
     @DisplayName("Should find user by phone")
     public void shouldFindUserByPhone() {
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByPhone(utilisateur.getPhone());
-        assertThat(utilisateurOptional).isPresent();
-        assertThat(utilisateurOptional.get().getPhone()).isEqualTo("+33661474742");
+
+        assertThat(utilisateurOptional).isPresent()
+                .get()
+                .extracting(Utilisateur::getPhone)
+                .isEqualTo("+33661474742");
     }
 
     @Test
@@ -175,7 +180,7 @@ public class UtilisateurRepositoryTest {
     }
 
     /**
-     * confirms that the user is born before today
+     * confirms that the user was born before today
      */
     @Test
     @DisplayName("Should return user born before today")
@@ -184,7 +189,7 @@ public class UtilisateurRepositoryTest {
     }
 
     /**
-     * confirms that the user is not born in future
+     * confirms that the user was not born in the future
      */
     @Test
     @DisplayName("Should return user not born in future")
