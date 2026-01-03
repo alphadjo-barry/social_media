@@ -65,7 +65,7 @@ public class ValidationServiceImpl implements ValidationService {
         validationRepository.save(validation);
     }
 
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void deleteExpiredValidation(){
         validationRepository.deleteExpired(Instant.now().minus(5, ChronoUnit.MINUTES));
     }

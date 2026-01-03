@@ -39,6 +39,7 @@ public class UtilisateurRepositoryTest {
 
     @BeforeEach
     void setup(){
+
         roleUser = Role.builder()
                 .name("ROLE_USER")
                 .isActive(false)
@@ -73,11 +74,16 @@ public class UtilisateurRepositoryTest {
     @Test
     @DisplayName("Should return empty list when no user added")
     public void shouldReturnEmptyListWhenNoOneUserAdded(){
+
+        //When
         List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
+
+        //Given
         assertThat(utilisateurs).isNotEmpty();
+
+        //Then
         assertThat(utilisateurs.size()).isEqualTo(1);
     }
-
 
     @Test
     @DisplayName("Should find user by id")
@@ -157,7 +163,7 @@ public class UtilisateurRepositoryTest {
      */
     @Test
     @DisplayName("Should return user with role ROLE_USER")
-    public void shouldContainRoledUserTest(){
+    public void shouldContainRoledUserTest()    {
         assertThat(utilisateur.getRoles()).contains(roleUser);
     }
 

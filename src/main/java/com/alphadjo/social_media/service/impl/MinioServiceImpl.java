@@ -33,7 +33,7 @@ public class MinioServiceImpl implements MinioService {
     public void uploadProfilePicture(String filename, InputStream inputStream, String contentType, String bucketName) {
 
         try{
-            Jwt jwt =authenticationUserService.getAuthenticatedUser();
+            Jwt jwt = authenticationUserService.getAuthenticatedUser();
 
             Utilisateur utilisateur = utilisateurRepository.findByEmail(jwt.getSubject()).orElseThrow(
                     () -> new EntityNotFoundException("User not found with username: " + jwt.getSubject() + " in the system"));
